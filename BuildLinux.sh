@@ -17,7 +17,7 @@ function check_available_memory_and_disk() {
         exit 2
     fi
 
-    if [[ ${FREE_DISK_KB} -le ${MIN_DISK_KB} ]]; then 
+    if [[ ${FREE_DISK_KB} -le ${MIN_DISK_KB} ]]; then
         echo -e "\nERROR: Bambu Studio Builder requires at least $(echo $MIN_DISK_KB |awk '{ printf "%.1fG\n", $1/1024/1024; }') (system has only $(echo ${FREE_DISK_KB} | awk '{ printf "%.1fG\n", $1/1024/1024; }') disk free)"
         echo && df -h . && echo
         exit 1
@@ -42,38 +42,38 @@ function usage() {
 
 unset name
 while getopts ":1fbcdghirsu" opt; do
-  case ${opt} in
-    1 )
-        export CMAKE_BUILD_PARALLEL_LEVEL=1
-        ;;
-    f )
-        DISABLE_PARALLEL_LIMIT=1
-        ;;
-    b )
-        BUILD_DEBUG="1"
-        ;;
-    c )
-        CLEAN_BUILD=1
-        ;;
-    d )
-        BUILD_DEPS="1"
-        ;;
-    h ) usage
-        exit 0
-        ;;
-    i )
-        BUILD_IMAGE="1"
-        ;;
-    r )
-	    SKIP_RAM_CHECK="1"
-	;;
-    s )
-        BUILD_BAMBU_STUDIO="1"
-        ;;
-    u )
-        UPDATE_LIB="1"
-        ;;
-  esac
+    case ${opt} in
+        1 )
+            export CMAKE_BUILD_PARALLEL_LEVEL=1
+            ;;
+        f )
+            DISABLE_PARALLEL_LIMIT=1
+            ;;
+        b )
+            BUILD_DEBUG="1"
+            ;;
+        c )
+            CLEAN_BUILD=1
+            ;;
+        d )
+            BUILD_DEPS="1"
+            ;;
+        h ) usage
+            exit 0
+            ;;
+        i )
+            BUILD_IMAGE="1"
+            ;;
+        r )
+            SKIP_RAM_CHECK="1"
+            ;;
+        s )
+            BUILD_BAMBU_STUDIO="1"
+            ;;
+        u )
+            UPDATE_LIB="1"
+            ;;
+    esac
 done
 
 if [ ${OPTIND} -eq 1 ]
@@ -90,7 +90,7 @@ OSLIKE=$(awk -F= '/^ID_LIKE=/ {print $2}' /etc/os-release | tr -d '"')
 # Iterate over a list of candidate distribution targets, first match is used
 for CANDIDATE in ${DISTRIBUTION} ${OSLIKE}; do
     if [ -f ./linux.d/${CANDIDATE} ]
-    then 
+    then
         TARGET_DISTRO="${CANDIDATE}"
         break
     fi

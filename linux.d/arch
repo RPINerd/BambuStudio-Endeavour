@@ -1,0 +1,80 @@
+FOUND_GTK3=$(pacman -Q | grep '^gtk3' || true)
+
+REQUIRED_DEV_PACKAGES=(
+    base-devel
+    autoconf
+    automake
+    cmake
+    extra-cmake-modules
+    file
+    gettext
+    git
+    wget
+    ninja
+    perl
+    m4
+    texinfo
+    dbus
+    wayland
+    wayland-protocols
+    libxkbcommon
+    curl
+    openssl
+    libtool
+    libunwind
+    fuse2
+    glew
+    libmspack
+    mesa
+    glu
+    libglvnd
+    gtk3
+    gstreamer
+    gst-plugins-base
+    gst-plugins-bad
+    openh264
+    nasm
+    yasm
+    x264
+    bzip2
+    eglexternalplatform
+    libsecret
+)
+
+# AUR_PACKAGES=(
+#     gstreamermm
+# )
+
+if [[ -n "$UPDATE_LIB" ]]
+then
+    NEEDED_PKGS=""
+    for PKG in ${REQUIRED_DEV_PACKAGES[@]}; do
+        pacman -Qi ${PKG} >/dev/null 2>&1 || NEEDED_PKGS+=" ${PKG}"
+    done
+
+    if [ -n "${NEEDED_PKGS}" ]; then
+        echo "Found missing packages:${NEEDED_PKGS}"
+        echo "Installing missing packages via pacman..."
+        sudo pacman -Syyu --needed --noconfirm ${NEEDED_PKGS}
+    fi
+
+    # Install AUR packages via yay or paru
+    # NEEDED_AUR_PKGS=""
+    # for PKG in ${AUR_PACKAGES[@]}; do
+    #     pacman -Qi ${PKG} >/dev/null 2>&1 || NEEDED_AUR_PKGS+=" ${PKG}"
+    # done
+
+    # if [ -n "${NEEDED_AUR_PKGS}" ]; then
+    #     echo "Found missing AUR packages:${NEEDED_AUR_PKGS}"
+    #     echo "Installing missing AUR packages via AUR helper..."
+    #     if command -v yay &> /dev/null; then
+    #         yay -Syu --needed --noconfirm ${NEEDED_AUR_PKGS}
+    #     else
+    #         echo "Warning: AUR helper not found. Install with: yay -S${NEEDED_AUR_PKGS}"
+    #     fi
+    # fi
+    echo -e "done\n"
+    exit 0
+fi
+
+FOUND_GTK3_DEV=$(pacman -Q | grep '^gtk3' || true)
