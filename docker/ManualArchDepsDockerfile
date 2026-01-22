@@ -1,0 +1,42 @@
+FROM docker.io/archlinux:latest
+
+# Update system and install minimal build deps (mirrors Ubuntu variant)
+RUN pacman-key --init
+RUN pacman -Syu --noconfirm \
+    && pacman -S --noconfirm --needed \
+    base-devel \
+    autoconf \
+    cmake \
+    curl \
+    xorg-server-xvfb \
+    extra-cmake-modules \
+    file \
+    git \
+    m4 \
+    pkgconf \
+    sudo \
+    wayland-protocols \
+    webkit2gtk \
+    wget
+
+# Allow password-less sudo for ALL users
+RUN echo "ALL ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/999-passwordless \
+    && chmod 440 /etc/sudoers.d/999-passwordless
+
+# Install yay AUR helper
+RUN useradd -m -G wheel builduser
+
+COPY ./gstreamermm /tmp/gstreamermm
+
+RUN chown -R builduser:builduser /tmp/gstreamermm \
+    && sudo -u builduser bash -c 'cd /tmp/gstreamermm \
+    && makepkg -si --noconfirm \
+    && cd .. \
+    && rm -rf gstreamermm'
+
+COPY ./ /BambuStudio
+
+WORKDIR /BambuStudio
+
+# Install additional packages via project script and build dependencies
+RUN set -x && ./BuildLinux.sh -u
